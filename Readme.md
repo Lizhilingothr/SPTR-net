@@ -4,7 +4,7 @@ This repository contains the implementation of SPTR-net, a deep learning model d
 
 ## Model Architecture Highlights
 
-The core of this project is the `TMVANet_SlowFast_U.py` script, which defines a novel architecture with several key innovations for radar data processing:
+The core of this project is the `SPTR-net.py` script, which defines a novel architecture with several key innovations for radar data processing:
 
 1.  **Dual-Stream (Slow-Fast) Design**:
     *   **Spatial Stream (Slow Path)**: Processes a single, high-resolution radar frame to capture rich spatial details, such as the shape and texture of clutter and interference.
@@ -14,7 +14,7 @@ The core of this project is the `TMVANet_SlowFast_U.py` script, which defines a 
     *   Instead of traditional 3D convolutions, the temporal stream utilizes a Graph Convolutional Network (GCN) to explicitly model the relationships between different frames in the time sequence.
     *   Supports both a **static** (fully-connected) and a **dynamic** (similarity-based) adjacency matrix for ablation studies.
 
-3.  **Spatial Position Enhancement (SPE)**:
+3.  **Spatial Position Enhancement (SPA)**:
     *   A novel module that injects learnable positional encodings into the spatial stream. This allows the model to leverage the inherent positional priors in radar data (e.g., signals near the center vs. at the edge have different characteristics).
 
 4.  **Temporal Attention Aggregation (TTA)**:
@@ -25,13 +25,13 @@ The core of this project is the `TMVANet_SlowFast_U.py` script, which defines a 
 1.  **Clone the repository:**
     ```bash
     git clone [your-repository-url]
-    cd T-RODNet-main
+    cd SPTR-net
     ```
 
 2.  **Create a Conda environment (recommended):**
     ```bash
     conda create -n trodnet python=3.8
-    conda activate trodnet
+    conda activate sptr
     ```
 
 3.  **Install dependencies:**
@@ -68,18 +68,18 @@ dataset_npy_2d/
 
 ## How to Use the Model
 
-The main script for training and testing is `train_tmvanet_slowfast.py`. It provides a flexible command-line interface to control the model's behavior.
+The main script for training and testing is `train_sptr.py`. It provides a flexible command-line interface to control the model's behavior.
 
 ### Training
 
 **Standard Training (Dual mode with GCN and SPE):**
 ```bash
-python train_tmvanet_slowfast.py --mode train --data-root dataset_npy --batch-size 4 --gpu-ids 0 --run-name "TMVANet_dual_gcn_spe"
+python train_sptr.py --mode train --data-root dataset_npy --batch-size 4 --gpu-ids 0 --run-name "sptr"
 ```
 
 **Resume Training from a Checkpoint:**
 ```bash
-python train_tmvanet_slowfast.py --mode train --data-root dataset_npy --resume --run-name "TMVANet_resume_run"
+python train_sptr.py --mode train --data-root dataset_npy --resume --run-name "TMVANet_resume_run"
 ```
 
 ### Testing and Visualization
@@ -87,7 +87,7 @@ python train_tmvanet_slowfast.py --mode train --data-root dataset_npy --resume -
 This will run the model on the test set and save the visualization results (input, ground truth, prediction) as separate images in the specified results directory.
 
 ```bash
-python train_tmvanet_slowfast.py --mode test --weights "path/to/your/best.pth" --data-root dataset_npy --results-dir "results/test_run_1"
+python train_sptr.py --mode test --weights "path/to/your/best.pth" --data-root dataset_npy --results-dir "results/test_run_1"
 ```
 
 ### Ablation Studies (Examples)
@@ -130,29 +130,20 @@ python train_tmvanet_slowfast.py --mode train --num-gcn-blocks 3 --run-name "abl
 python train_tmvanet_slowfast.py --mode train --adj-matrix-mode dynamic --run-name "ablation_dynamic_adj"
 ```
 
-**5. Disabling Spatial Position Enhancement (SPE):**
-- To turn SPE off, add the `--no-spe` flag.
+**5. Disabling Spatial Position Enhancement (SPA):**
+- To turn SPA off, add the `--no-spe` flag.
 
 ```bash
 # Example: Train without the SPE module
-python train_tmvanet_slowfast.py --mode train --no-spe --run-name "ablation_no_spe"
+python train_tmvanet_sptr.py --mode train --no-spe --run-name "ablation_no_spe"
 ```
 
 ## Visualization Tools
 
 Two utility scripts are provided to help you inspect your data.
 
-### 1. Visualizing Raw JSON Labels (`visualize_raw_gt.py`)
 
-This script is for visualizing your *original* dataset (before preprocessing into `.npy` files). It reads `.png` images and their corresponding `.json` label files.
-
-**Usage:**
-```bash
-python visualize_raw_gt.py --image-dir "path/to/png/images" --label-dir "path/to/json/labels" --output-dir "output/raw_viz"
-```
-*Note: You may need to install OpenCV (`pip install opencv-python`).*
-
-### 2. Visualizing Preprocessed `.npy` Data (`visualize_gt.py`)
+### Visualizing Preprocessed `.npy` Data (`visualize_gt.py`)
 
 This script visualizes the ground truth from your preprocessed `.npy` dataset, allowing you to verify that the data is correctly formatted before training.
 
