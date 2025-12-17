@@ -1,6 +1,6 @@
-# TMVANet-SlowFast for Radar Semantic Segmentation
+# SPTR-net for Radar Semantic Segmentation
 
-This repository contains the implementation of TMVANet-SlowFast, a deep learning model designed for semantic segmentation of radar imagery. The model leverages a dual-stream architecture (spatial and temporal) to effectively process both the fine-grained details within a single frame and the dynamic evolution across multiple frames.
+This repository contains the implementation of SPTR-net, a deep learning model designed for semantic segmentation of radar imagery. The model leverages a dual-stream architecture (spatial and temporal) to effectively process both the fine-grained details within a single frame and the dynamic evolution across multiple frames.
 
 ## Model Architecture Highlights
 
